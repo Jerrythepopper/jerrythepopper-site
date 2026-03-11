@@ -197,8 +197,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,
 /* LIGHTBOX */
 .lb{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:500;display:none;align-items:center;justify-content:center}
 .lb.open{display:flex}
-.lb-img-wrap{position:relative;max-width:90vw;max-height:90vh;display:flex;align-items:center;justify-content:center}
-.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;display:block;opacity:0;transition:opacity .3s}
+.lb-img-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.lb-img{max-width:88vw;max-height:88vh;width:auto;height:auto;object-fit:contain;display:block;opacity:0;transition:opacity .4s}
 .lb-img.loaded{opacity:1}
 .lb-placeholder{width:70vw;height:60vh;background:linear-gradient(135deg,#1a1a1a,#222);display:flex;align-items:center;justify-content:center}
 .lb-placeholder-text{color:rgba(255,255,255,.2);font-size:11px;letter-spacing:.2em;text-transform:uppercase}
@@ -543,23 +543,26 @@ const portfolioData = {
     {title:'Film 20',meta:'Film · 2020',img:'images/film/20.jpg'},
   ],
   market:[
-    {title:'攝影集',meta:'Documentary · 2019',img:'images/market/01.jpg'},
-    {title:'攝影集內頁',meta:'Documentary · 2019',img:'images/market/02.jpg'},
-    {title:'攝影集內頁',meta:'Documentary · 2019',img:'images/market/03.jpg'},
-    {title:'攝影集內頁',meta:'Documentary · 2019',img:'images/market/04.jpg'},
-    {title:'攝影集內頁',meta:'Documentary · 2019',img:'images/market/05.jpg'},
-    {title:'舊市場光景',meta:'Documentary · 2019',img:'images/market/06.jpg'},
-    {title:'看菜',meta:'Documentary · 2019',img:'images/market/07.jpg'},
-    {title:'批價',meta:'Documentary · 2019',img:'images/market/08.jpg'},
-    {title:'水果攤販',meta:'Documentary · 2019',img:'images/market/09.jpg'},
-    {title:'水果攤販',meta:'Documentary · 2019',img:'images/market/10.jpg'},
-    {title:'水果攤販',meta:'Documentary · 2019',img:'images/market/11.jpg'},
-    {title:'水果攤販',meta:'Documentary · 2019',img:'images/market/12.jpg'},
-    {title:'水果攤販',meta:'Documentary · 2019',img:'images/market/13.jpg'},
-    {title:'拍賣',meta:'Documentary · 2019',img:'images/market/14.jpg'},
-    {title:'看菜',meta:'Documentary · 2019',img:'images/market/15.jpg'},
-    {title:'秤重',meta:'Documentary · 2019',img:'images/market/16.jpg'},
-    {title:'清晨',meta:'Documentary · 2019',img:'images/market/17.jpg'},
+    {title:'凌晨三點的市場',meta:'Documentary · 2022',img:'images/market/01.jpg'},
+    {title:'魚販',meta:'Documentary · 2022',img:'images/market/02.jpg'},
+    {title:'搬運工',meta:'Documentary · 2022',img:'images/market/03.jpg'},
+    {title:'清晨的光',meta:'Documentary · 2022',img:'images/market/04.jpg'},
+    {title:'蔬菜堆',meta:'Documentary · 2022',img:'images/market/05.jpg'},
+    {title:'收工',meta:'Documentary · 2022',img:'images/market/06.jpg'},
+    {title:'批發商',meta:'Documentary · 2023',img:'images/market/07.jpg'},
+    {title:'空曠的走道',meta:'Documentary · 2023',img:'images/market/08.jpg'},
+    {title:'霓虹燈下',meta:'Documentary · 2023',img:'images/market/09.jpg'},
+    {title:'貨車司機',meta:'Documentary · 2023',img:'images/market/10.jpg'},
+    {title:'開市前',meta:'Documentary · 2023',img:'images/market/11.jpg'},
+    {title:'最後一批貨',meta:'Documentary · 2023',img:'images/market/12.jpg'},
+    {title:'人潮',meta:'Documentary · 2023',img:'images/market/13.jpg'},
+    {title:'推車',meta:'Documentary · 2023',img:'images/market/14.jpg'},
+    {title:'磅秤',meta:'Documentary · 2023',img:'images/market/15.jpg'},
+    {title:'對話',meta:'Documentary · 2023',img:'images/market/16.jpg'},
+    {title:'等待',meta:'Documentary · 2023',img:'images/market/17.jpg'},
+    {title:'離開',meta:'Documentary · 2023',img:'images/market/18.jpg'},
+    {title:'殘影',meta:'Documentary · 2023',img:'images/market/19.jpg'},
+    {title:'空場',meta:'Documentary · 2023',img:'images/market/20.jpg'},
   ],
 };
 
@@ -684,9 +687,29 @@ function lbRender(){
   if(!item) return;
   document.getElementById('lbCounter').textContent=(lbCurrentIdx+1)+' / '+lbCurrentSet.length;
   document.getElementById('lbCaption').innerHTML=`<div class="lb-caption-title">${item.title}</div><div class="lb-caption-meta">${item.meta}</div>`;
-  // In production, replace placeholder with real <img src="...">
-  document.getElementById('lbPlaceholder').style.display='flex';
-  document.getElementById('lbImg').style.display='none';
+
+  const placeholder=document.getElementById('lbPlaceholder');
+  const imgEl=document.getElementById('lbImg');
+
+  if(item.img){
+    placeholder.style.display='none';
+    imgEl.style.display='block';
+    imgEl.classList.remove('loaded');
+    imgEl.onload=null;
+    imgEl.onerror=null;
+    imgEl.src='';
+    imgEl.onload=function(){
+      imgEl.classList.add('loaded');
+    };
+    imgEl.onerror=function(){
+      imgEl.style.display='none';
+      placeholder.style.display='flex';
+    };
+    imgEl.src=item.img;
+  } else {
+    placeholder.style.display='flex';
+    imgEl.style.display='none';
+  }
 }
 function lbNav(dir){
   lbCurrentIdx=(lbCurrentIdx+dir+lbCurrentSet.length)%lbCurrentSet.length;
